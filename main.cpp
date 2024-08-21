@@ -29,11 +29,44 @@
 
 
 #include "UI.h"
+#include <unistd.h>
+#include <iostream>
 
 int main(int argc, char** argv) {
+    int c;
+    while ((c = getopt(argc, argv, "h")) != -1) {
+        switch (c) {
+        case 'h':
+            std::cout <<
+                "HOTKEYS:\n"
+                "1    Power State\n"
+                "2    Input\n"
+                "3    A/V Mute\n"
+                "4    Error Code\n"
+                "5    Lamp Status\n"
+                "6    Lamp Hours\n\n"
+                "h    Console Page Down\n"
+                "j    Console Line Down\n"
+                "k    Console Line Up\n"
+                "l    Console Page Up\n\n"
+                "g    Console Home\n"
+                "G    Console End\n\n"
+                "o    Listen\n\n"
+                "q    Quit Application\n\n"
+                ":    Command Prompt\n\n"
+                "COMMANDS:\n"
+                "port [number]\n"
+                "    Set the TCP/IP port number to listen on.\n\n"
+                "q | quit | exit\n"
+                "    Quit the application." << std::endl;
+            return 0;
+        default:
+            return -1;
+        }
+    }
+
     UI *ui = UI::getInstance();
     ui->initialize();
     ui->shutdown();
     return 0;
 }
-

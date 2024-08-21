@@ -135,9 +135,12 @@ void Projector::close() {
     ::shutdown(_clientfd, SHUT_RDWR);
     ::shutdown(_serverfd, SHUT_RDWR);
     
-    // TODO: Null checks.
-    fclose(_sin);
-    fclose(_sout);
+    if (_sin != NULL) {
+        fclose(_sin);
+    }
+    if (_sout != NULL) {
+        fclose(_sout);
+    }
     
     _socketListener->join();
     delete _socketListener;
@@ -148,8 +151,12 @@ void Projector::closeClient() {
     
     ::shutdown(_clientfd, SHUT_RDWR);
     
-    fclose(_sin);
-    fclose(_sout);
+    if (_sin != NULL) {
+        fclose(_sin);
+    }
+    if (_sout != NULL) {
+        fclose(_sout);
+    }
 }
 
 void Projector::listen() {
@@ -168,6 +175,12 @@ void Projector::listen(int port) {
     _serverfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_serverfd < 0) {
         _ui->print("Failed to create socket.");
+        return;
+    }
+
+    int reuse = 1;
+    if (setsockopt(_serverfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) < 0) {
+        _ui->print("Failed to set SO_REUSEADDR.");
         return;
     }
     
